@@ -54,27 +54,27 @@ public class Spline2D {
 		
 		Matrix4f XMat = new Matrix4f();
 		XMat.m00 = (float) Math.pow(((float) verticies.get(lastI-1)[0]), 3);
-		XMat.m10 = (float) Math.pow(((float) verticies.get(lastI)[0]), 3);
+		XMat.m01 = (float) Math.pow(((float) verticies.get(lastI)[0]), 3);
 		
-		XMat.m01 = (float) Math.pow(((float) verticies.get(lastI-1)[0]), 2);
+		XMat.m10 = (float) Math.pow(((float) verticies.get(lastI-1)[0]), 2);
 		XMat.m11 = (float) Math.pow(((float) verticies.get(lastI)[0]), 2);
 		
-		XMat.m02 = (float) verticies.get(lastI-1)[0];
-		XMat.m12 = (float) verticies.get(lastI)[0];
+		XMat.m20 = (float) verticies.get(lastI-1)[0];
+		XMat.m21 = (float) verticies.get(lastI)[0];
 		
-		XMat.m03 = 1.0f;
-		XMat.m13 = 1.0f;
+		XMat.m30 = 1.0f;
+		XMat.m31 = 1.0f;
 		
-		XMat.m20 = (float) (3.0f * Math.pow(((float) verticies.get(lastI-1)[0]), 2));
-		XMat.m30 = (float) (3.0f * Math.pow(((float) verticies.get(lastI)[0]), 2));
+		XMat.m02 = (float) (3.0f * Math.pow(((float) verticies.get(lastI-1)[0]), 2));
+		XMat.m03 = (float) (3.0f * Math.pow(((float) verticies.get(lastI)[0]), 2));
 		
-		XMat.m21 = (float) (2.0f * verticies.get(lastI-1)[0]);
-		XMat.m31 = (float) (2.0f * verticies.get(lastI)[0]);
+		XMat.m12 = (float) (2.0f * verticies.get(lastI-1)[0]);
+		XMat.m13 = (float) (2.0f * verticies.get(lastI)[0]);
 		
 		XMat.m22 = 1.0f;
-		XMat.m32 = 1.0f;
+		XMat.m23 = 1.0f;
 		
-		XMat.m23 = 0.0f;
+		XMat.m32 = 0.0f;
 		XMat.m33 = 0.0f;
 		
 		Matrix4f XMatInv = (Matrix4f) XMat.invert();
@@ -87,6 +87,7 @@ public class Spline2D {
 		constB.add(CVec.getY());
 		constC.add(CVec.getZ());
 		constD.add(CVec.getW());
+		
 	}
 	
 	public void addVertex(int x, int y, float tangent){
@@ -109,7 +110,15 @@ public class Spline2D {
 		
 	}
 	
-	public int getValue(int x){
+	public int getValue(int x){		
+		for(int i = 0;i < verticies.size(); i++){
+			System.out.println(verticies.get(i)[0]);
+			if(verticies.get(i)[0] >= x){
+				i--;
+				int y = (int) (constA.get(i) * Math.pow(x, 3) + constB.get(i) * Math.pow(x, 2) + constC.get(i) * x + constD.get(i));
+				return y;
+			}
+		}
 		return 0;
 		
 	}

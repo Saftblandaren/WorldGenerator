@@ -18,6 +18,7 @@ public class ImageGenerator {
 		int r;
 		int g;
 		int b;
+		// set all pixel on color img.
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
 				String key = String.valueOf(i) + ":" + String.valueOf(j);
