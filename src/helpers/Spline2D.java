@@ -112,7 +112,7 @@ public class Spline2D {
 	
 	public int getValue(int x){		
 		for(int i = 0;i < verticies.size(); i++){
-			System.out.println(verticies.get(i)[0]);
+			//System.out.println(verticies.get(i)[0]);
 			if(verticies.get(i)[0] >= x){
 				i--;
 				int y = (int) (constA.get(i) * Math.pow(x, 3) + constB.get(i) * Math.pow(x, 2) + constC.get(i) * x + constD.get(i));
