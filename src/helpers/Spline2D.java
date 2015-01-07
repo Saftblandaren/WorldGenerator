@@ -106,7 +106,7 @@ public class Spline2D {
 	
 	public void close(){
 		//use same value as first vertex
-		addVertex(verticies.get(0)[0], verticies.get(0)[1], tangets.get(0));
+		addVertex(360, verticies.get(0)[1], tangets.get(0));
 		
 	}
 	
