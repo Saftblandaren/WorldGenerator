@@ -59,6 +59,16 @@ public class Camp {
 		return posY;
 	}
 	
-	
+	public boolean isInCamp(int x, int y){
+		int deltaX = x-posX;
+		int deltaY = y-posY;
+		int angle = (int) Math.toDegrees(Math.atan(deltaY/deltaX));
+		int distance = (int) Math.pow(Math.pow(deltaY, 2) + Math.pow(deltaX, 2), 2);
+		if (distance <= outline.getValue(angle)){
+			return true;
+		}
+		
+		return false;
+	}
 
 }
