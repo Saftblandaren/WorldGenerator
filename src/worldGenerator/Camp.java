@@ -32,7 +32,7 @@ public class Camp {
 		do{
 			angle += 24 + random.nextInt(24);
 			int radius = (int) (sizeRadius*0.8 +  random.nextInt((int) (sizeRadius*0.2)));
-			outline.addVertex(radius, angle, 0f);
+			outline.addVertex(angle, radius, 0f);
 		}while(angle<324);
 		outline.close();
 	}
@@ -65,9 +65,11 @@ public class Camp {
 		int angle = (int) Math.toDegrees(Math.atan(deltaY/deltaX));
 		int distance = (int) Math.pow(Math.pow(deltaY, 2) + Math.pow(deltaX, 2), 2);
 		if (distance <= outline.getValue(angle)){
+			System.out.println("True");
 			return true;
 		}
 		
+		System.out.println("False");
 		return false;
 	}
 	

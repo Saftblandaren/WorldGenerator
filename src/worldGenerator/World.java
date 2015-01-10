@@ -18,7 +18,8 @@ public class World {
 	public World(Random random) {
 		this.random = random;
 		sizeX = random.nextInt(3);
-		size = (int) Math.pow(2,(sizeX + 14));
+		size = (int) Math.pow(2,(sizeX + 8));
+		//size = (int) Math.pow(2,(sizeX + 14));
 		nCamps = 1 + random.nextInt(3) + random.nextInt(sizeX+1);
 		int capitalTest = nCamps + random.nextInt(4);
 		if(capitalTest>6){
@@ -36,6 +37,7 @@ public class World {
 		
 		camps.add(capital);
 		
+		/**
 		world_buff = new HashMap<String, Integer>();
 		
 		for(Camp camp:camps){
@@ -60,8 +62,18 @@ public class World {
 			}
 			
 		}
-
+		*/
+	
 		
+	}
+	
+	public int getValue(int x, int y){
+		for(Camp camp:camps){
+			if(camp.isInCamp(x, y)){
+				return 1;
+			}
+		}
+		return 0;
 	}
 	
 	public HashMap<String, Integer> getWorld_buff() {

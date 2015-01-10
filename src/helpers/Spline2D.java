@@ -78,7 +78,9 @@ public class Spline2D {
 		XMat.m33 = 0.0f;
 		
 		Matrix4f XMatInv = (Matrix4f) XMat.invert();
-		
+		if (XMatInv == null){
+			System.out.println("ohno");
+		}
 		Vector4f YVec = new Vector4f(verticies.get(lastI-1)[1], verticies.get(lastI)[1], tangets.get(lastI-1), tangets.get(lastI));
 		
 		Vector4f CVec = Matrix4f.transform(XMatInv, YVec, null);
@@ -114,7 +116,7 @@ public class Spline2D {
 		for(int i = 0;i < verticies.size(); i++){
 			//System.out.println(verticies.get(i)[0]);
 			if(verticies.get(i)[0] >= x){
-				i--;
+				//i--;
 				int y = (int) (constA.get(i) * Math.pow(x, 3) + constB.get(i) * Math.pow(x, 2) + constC.get(i) * x + constD.get(i));
 				return y;
 			}
