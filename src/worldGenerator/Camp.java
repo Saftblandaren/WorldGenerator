@@ -70,5 +70,7 @@ public class Camp {
 		
 		return false;
 	}
+	
+	//just a minor change
 
 }
