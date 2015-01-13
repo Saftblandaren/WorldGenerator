@@ -8,6 +8,7 @@ import java.util.Random;
 public class World {
 	
 	private Random random;
+	private int slots;
 	private int sizeX;
 	private int size;
 	private int nCamps;
@@ -17,6 +18,7 @@ public class World {
 
 	public World(Random random) {
 		this.random = random;
+		// world could be 8x8 slots or 16x16 slots, each slot 8192x8192 pixels
 		sizeX = random.nextInt(3);
 		size = (int) Math.pow(2,(sizeX + 8));
 		//size = (int) Math.pow(2,(sizeX + 14));
