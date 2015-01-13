@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class Capital extends Camp {
 
-	public Capital(World world, float[] slot, Random random) {
-		super(world, slot, random);
+	public Capital(World world, int slotX, int slotY) {
+		super(world, slotX, slotY);
 	}
 
 }

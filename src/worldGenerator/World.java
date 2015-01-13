@@ -8,6 +8,8 @@ import java.util.Random;
 public class World {
 	
 	private Random random;
+	private int slots;
+	private final int SLOT_SIZE = 8192;
 	private int sizeX;
 	private int size;
 	private int nCamps;
@@ -17,14 +19,37 @@ public class World {
 
 	public World(Random random) {
 		this.random = random;
+		// world could be 8x8 slots or 16x16 slots, each slot 8192x8192 pixels
+		slots = (int) Math.pow(2, (3 + random.nextInt(2)));
+		
+		// Alway one capital
+		int slotMeanIndex = (slots-1) / 2;
+		int capitalXSlot = slotMeanIndex - 1 + random.nextInt(4);
+		int capitalYSlot = slotMeanIndex;
+		if (slotMeanIndex <= capitalXSlot && capitalXSlot <= slotMeanIndex+1){
+			capitalYSlot += -1 + random.nextInt(4);
+		} else {
+			capitalYSlot += random.nextInt(2);
+		}
+		capital = new Capital(this, capitalXSlot, capitalYSlot)
+		nCamps = random.nextInt(2) + random.nextInt(slots/8) + slots / 16;
+		camps.add(capital);
+		
+		for(int i = 0; i < nCamps; i++){
+			int[] slot = getFreeSlot();
+		}
+		
+		/*
 		sizeX = random.nextInt(3);
-		size = (int) Math.pow(2,(sizeX + 14));
+		size = (int) Math.pow(2,(sizeX + 8));
+		//size = (int) Math.pow(2,(sizeX + 14));
 		nCamps = 1 + random.nextInt(3) + random.nextInt(sizeX+1);
 		int capitalTest = nCamps + random.nextInt(4);
 		if(capitalTest>6){
 			capital = new Capital(this, new float[]{1.0f/3, 1.0f/3}, random);
 			nCamps -= 1;
 		}
+		*/
 		
 		List<float[]> campSlots = createCampSlots();
 		
@@ -33,34 +58,38 @@ public class World {
 			camps.add(new Camp(this, campSlots.get(slot), random));
 			campSlots.remove(slot);
 		}
-		
-		camps.add(capital);
-		
-		world_buff = new HashMap<String, Integer>();
-		
-		for(Camp camp:camps){
-			int x = camp.getPosX();
-			int y = camp.getPosY();
-			int r = camp.getSizeRadius();
 			
-			for(int i=0;i<r;i++){
-				int y_limit = (int) Math.pow((Math.pow(r, 2)-Math.pow(i, 2)),(1.0/2.0));
-				for(int j=0;j<y_limit;j++){
-					if( i==0){
-						world_buff.put(String.valueOf(x) + ":" + String.valueOf(y-j), 1);
-						world_buff.put(String.valueOf(x) + ":" + String.valueOf(y+j), 1);
-					}else{
-						world_buff.put(String.valueOf(x-i) + ":" + String.valueOf(y-j), 1);
-						world_buff.put(String.valueOf(x-i) + ":" + String.valueOf(y+j), 1);
-						world_buff.put(String.valueOf(x+i) + ":" + String.valueOf(y-j), 1);
-						world_buff.put(String.valueOf(x+i) + ":" + String.valueOf(y+j), 1);
-					}
+		
+	}
+	
+	public int getValue(int x, int y){
+		for(Camp camp:camps){
+			if(camp.isInCamp(x, y)){
+				return 1;
+			}
+		}
+		return 0;
+	}
+	
+	private int[] getFreeSlot(){
+		boolean free = false;
+		int x;
+		int y;
+		do{
+			x = 1 + random.nextInt(slots-1);
+			y = 1 + random.nextInt(slots-1);
+			for(Camp camp:camps){
+				int dx = x - camp.getSlotX();
+				int dy = y - camp.getSlotY();
+				double distance = Math.pow(Math.pow(dx, 2) + Math.pow(dy, 2), (1/2));
+				if (distance > 1.5){
+					free = true;
 				}
-
 			}
 			
-		}
-
+		}while(!free);
+		
+		return new int[]{x, y};
 		
 	}
 	
@@ -82,6 +111,10 @@ public class World {
 		return campSlots;
 		
 		
+	}
+
+	public Random getRandom() {
+		return random;
 	}
 
 	public int getSizeX() {

@@ -11,7 +11,9 @@ import javax.imageio.ImageIO;
 
 public class ImageGenerator {
 
-	public ImageGenerator(Spline2D spline, int size) {
+	public ImageGenerator(World world) {
+		
+		int size = world.getSize();
 		BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 		
 		File f = null;
@@ -24,11 +26,11 @@ public class ImageGenerator {
 		int p = (a<<24) | (r<<16) | (g<<8) | b;
 		
 		for(int i = 1; i < size-1; i++){
-			int y = spline.getValue(i);
-			y = Math.min(y,size);
-			y = Math.max(y, 1);
+			for(int j= 1;j < size-1; j++){
+				if(world.getValue(i, j) == 1)
+					img.setRGB(i, j, p);
+			}
 
-			img.setRGB(i, y, p);
 		}
 		
 		try{
