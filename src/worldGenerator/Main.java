@@ -1,7 +1,5 @@
 package worldGenerator;
 
-import helpers.Spline2D;
-
 import java.util.Random;
 
 public class Main {
