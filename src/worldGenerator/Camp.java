@@ -8,14 +8,14 @@ import java.util.Random;
 
 public class Camp {
 	
-	private Random random;
-	private World world;
-	private int slotX;
-	private int slotY;
+	protected Random random;
+	protected World world;
+	protected int slotX;
+	protected int slotY;
 	
-	private int sizeRadius;
-	private int posX;
-	private int posY;
+	protected int sizeRadius;
+	protected int posX;
+	protected int posY;
 	
 	private Spline2D outline;
 
@@ -24,7 +24,7 @@ public class Camp {
 		this.slotX = slotX;
 		this.slotY = slotY;
 		this.random = world.getRandom();
-		sizeRadius = (int) (world.getSize()*0.02f + random.nextInt((int) (world.getSize()*0.03f)));
+		sizeRadius = (int) (world.getSLOT_SIZE()*0.2f + random.nextInt((int) (world.getSLOT_SIZE()*0.1f)));
 		setPosition();
 		setOutline();
 	}
@@ -37,7 +37,7 @@ public class Camp {
 		return slotY;
 	}
 
-	private void setOutline(){
+	protected void setOutline(){
 		outline = new Spline2D(posX, (int) (posY-sizeRadius*0.9), 0.0f);
 		int angle = 0;
 		do{
@@ -48,17 +48,19 @@ public class Camp {
 		outline.close();
 	}
 	
-	private void setPosition(){
-		int minX = (int)((slot[0] + 0.05f) * (float) world.getSize());
-		int minY = (int)((slot[1] + 0.05f) * (float) world.getSize());
-		int deltaX = (int)(0.25f * (float) world.getSize());
-		int deltaY = (int)(0.25f * (float) world.getSize());
-		posX = minX + random.nextInt(deltaX);
-		posY = minY + random.nextInt(deltaY);
+	protected void setPosition(){
+		System.out.print("\nSizeRadius: ");
+		System.out.print(sizeRadius);
+		int minX = (int)(slotX * world.getSLOT_SIZE() + sizeRadius);
+		int minY = (int)(slotY * world.getSLOT_SIZE() + sizeRadius);
+		int delta = (int)(world.getSLOT_SIZE() - sizeRadius);
+		posX = minX + random.nextInt(delta);
+		posY = minY + random.nextInt(delta);
 		
 	}
 
 	public int getSizeRadius() {
+		
 		return sizeRadius;
 	}
 
@@ -73,17 +75,20 @@ public class Camp {
 	public boolean isInCamp(int x, int y){
 		int deltaX = x-posX;
 		int deltaY = y-posY;
-		int angle = (int) Math.toDegrees(Math.atan(deltaY/deltaX));
+		int angle;
+		if (deltaX == 0){
+			angle = 90 + 90 * Integer.signum(deltaY);
+		}else{
+			angle = (int) Math.toDegrees(Math.atan(deltaY/deltaX));
+		}
 		int distance = (int) Math.pow(Math.pow(deltaY, 2) + Math.pow(deltaX, 2), 2);
 		if (distance <= outline.getValue(angle)){
-			System.out.println("True");
+			//System.out.println("True");
 			return true;
 		}
 		
-		System.out.println("False");
+		//System.out.println("False");
 		return false;
 	}
-	
-	//just a minor change
 
 }
