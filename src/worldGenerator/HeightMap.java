@@ -6,34 +6,67 @@ import helpers.Spline2D;
 
 public class HeightMap {
 	
+	private int[][] meanHeightGrid;
+	private int meanHeightSpace;
 	private final int POINT_SPACE = 32;
 	private int[][] heightGrid;
-	private Spline2D[] heightMap;
 	private int size;
+	private Random random;
 	
 	public HeightMap(int world_size, Random random) {
+		this.random = random;
 		size = world_size/POINT_SPACE;
 		heightGrid = new int[size+1][size+1];
 		
+		generateMeanGrid(40);
 		//assign random values
 		for(int y = 0; y <= size; y++){
 			for (int x = 0; x<= size; x++){
-				heightGrid[x][y] = 50 + random.nextInt(150);
+				heightGrid[x][y] = getMeanGridValue(x, y);// - 40 + random.nextInt(81);
 			}
 		}
 		
 	}
 	
-	public void grid2Map(){
-		heightMap =  new Spline2D[size];
-		for(int y = 0; y < size; y++){
-			Spline2D tmp_spline = new Spline2D(0, heightGrid[0][y], 0.0f);
-			for (int x = 1; x< size; x++){
-				tmp_spline.addVertex(x*POINT_SPACE,heightGrid[x][y], 0.0f);
-			}	
-			heightMap[y] = tmp_spline;
+	private int getMeanGridValue(int x, int y){
+		int a = meanHeightGrid[x / (meanHeightSpace)][y / (meanHeightSpace)];
+		int b = meanHeightGrid[x / (meanHeightSpace) + 1 ][y / (meanHeightSpace)];
+		int c = meanHeightGrid[x / (meanHeightSpace)][y / (meanHeightSpace) + 1];
+		int d = meanHeightGrid[x / (meanHeightSpace) + 1][y / (meanHeightSpace) + 1];
+		float xMod = (x % meanHeightSpace) / meanHeightSpace;
+		float yMod = (y % meanHeightSpace) / meanHeightSpace;
+		int x1Weight =(int)  (a * xMod + b * (1-xMod));
+		int x2Weight =(int)  (c * xMod + d * (1-xMod));
+		return (int) (x1Weight * yMod + x2Weight * (1-yMod));
+	}
+	
+	private void generateMeanGrid(int safe){
+		meanHeightGrid = new int[5][5];
+		meanHeightSpace = (size) / 3;
+		System.out.println(meanHeightSpace);
+		// Set value of corners
+		for(int i = 0; i < 2; i++){
+			for(int j = 0; j < 2; j++){
+				int h = 20 + safe + (205 - safe) * random.nextInt(2);
+				meanHeightGrid[i*4][j*4] = h;
+			}
 		}
 		
+		// Set value of horizontal edges
+		for(int i = 0; i < 2; i++){
+			for(int j=1; j<4; j++){
+				int hWeighted =  meanHeightGrid[i*4][0] * (j / 5) + meanHeightGrid[i*4][0] * (1- j / 5);
+				meanHeightGrid[i*4][j] = hWeighted - 25 + random.nextInt(51);
+			}
+		}
+		
+		// Set value of vertical lines
+				for(int i = 0; i < 5; i++){
+					for(int j=1; j<4; j++){
+						int hWeighted =  meanHeightGrid[0][i] * (j / 5) + meanHeightGrid[0][i] * (1- j / 5);
+						meanHeightGrid[j][i] = hWeighted - 25 + random.nextInt(51);
+					}
+				}
 	}
 	
 	public int getHeight(int x, int y){
@@ -58,11 +91,16 @@ public class HeightMap {
 			return tmp_spline.getValue(weightX);
 		}
 		
-		return 150;
-	}
-	
-	public int getGridHeight(int x, int y){
-		return heightGrid[x/POINT_SPACE][y/POINT_SPACE];
+		Spline2D tmp_spline1 = new Spline2D(0, heightGrid[slotX][slotY], 0.0f);
+		tmp_spline1.addVertex(POINT_SPACE, heightGrid[slotX+1][slotY], 0.0f);
+		
+		Spline2D tmp_spline2 = new Spline2D(0, heightGrid[slotX][slotY+1], 0.0f);
+		tmp_spline2.addVertex(POINT_SPACE, heightGrid[slotX+1][slotY+1], 0.0f);
+		
+		Spline2D tmp_spline3 = new Spline2D(0, tmp_spline1.getValue(weightX), 0.0f);
+		tmp_spline3.addVertex(POINT_SPACE, tmp_spline2.getValue(weightX), 0.0f);
+		
+		return tmp_spline3.getValue(weightY);
 	}
 	
 	public void increaseGridHeight(int x, int y, int value){

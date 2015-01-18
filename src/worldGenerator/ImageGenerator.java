@@ -13,6 +13,7 @@ public class ImageGenerator {
 		int size = world.getSLOT_SIZE();
 		for(int slotX = 0; slotX < world.getSlots(); slotX++){
 			for(int slotY = 0; slotY < world.getSlots(); slotY++){
+				System.out.println("Generating slot: " + slotX + " ; " + slotY);
 				BufferedImage map = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 				BufferedImage height = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 				File f_map = null;

@@ -53,7 +53,6 @@ public class World {
 		}
 		
 		heightMap = new HeightMap(slots*SLOT_SIZE, random);
-		heightMap.grid2Map();
 		
 		
 	}
