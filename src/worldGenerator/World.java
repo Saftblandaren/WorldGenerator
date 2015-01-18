@@ -8,11 +8,12 @@ public class World {
 	
 	private Random random;
 	private int slots;
-	//private final int SLOT_SIZE = 8192;
+	//private final int SLOT_SIZE = 2048;
 	private final int SLOT_SIZE = 256;
 	private int nCamps;
 	private Camp capital;
 	private List<Camp> camps;
+	private HeightMap heightMap;
 
 	public World(Random random) {
 		this.random = random;
@@ -20,6 +21,7 @@ public class World {
 		
 		// world could be 8x8 slots or 16x16 slots, each slot 8192x8192 pixels
 		slots = (int) Math.pow(2, (3 + random.nextInt(2)));
+		slots = 8;
 		
 		// Alway one capital
 		int slotMeanIndex = (slots-1) / 2;
@@ -34,6 +36,7 @@ public class World {
 		camps.add(capital);
 		
 		nCamps = random.nextInt(2) + random.nextInt(slots/8) + slots / 16;
+		nCamps = 2;
 		
 		System.out.print("\nNumber of slots: ");
 		System.out.print(slots);
@@ -49,19 +52,20 @@ public class World {
 			camps.add(new Camp(this, slot[0], slot[1]));
 		}
 		
+		heightMap = new HeightMap(slots*SLOT_SIZE, random);
+		heightMap.grid2Map();
 		
 		
 	}
 	
+	public int getHeight(int x,int y){
+		return heightMap.getHeight(x, y);
+	}
+	
 	public int getValue(int x, int y){
-		/**
-		if(random.nextBoolean()){
-			return 1;
-		}
-		*/
 		for(Camp camp:camps){
 			if(camp.isInCamp(x, y)){
-				System.out.println("pixel");
+				//System.out.println("pixel");
 				return 1;
 			}
 		}
@@ -73,8 +77,8 @@ public class World {
 		int x;
 		int y;
 		do{
-			x = 1 + random.nextInt(slots-1);
-			y = 1 + random.nextInt(slots-1);
+			x = 1 + random.nextInt(slots-2);
+			y = 1 + random.nextInt(slots-2);
 			for(Camp camp:camps){
 				int dx = x - camp.getSlotX();
 				int dy = y - camp.getSlotY();

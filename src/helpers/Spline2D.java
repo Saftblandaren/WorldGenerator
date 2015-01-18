@@ -10,25 +10,26 @@ public class Spline2D {
 	
 	private List<int[]> verticies;
 	private List<Float> tangets;
-	private List<Float> constA;
-	private List<Float> constB;
-	private List<Float> constC;
-	private List<Float> constD;
+	private List<Double> constA;
+	private List<Double> constB;
+	private List<Double> constC;
+	private List<Double> constD;
 	
 	// y = A * x^3 + B * x^2 + C * x + D
 	
-	public Spline2D(int x, int y, float k){
+	public Spline2D(int x, int y, Float k){
 		verticies = new ArrayList<int[]>();
 		tangets = new ArrayList<Float>();
-		constA = new ArrayList<Float>();
-		constB = new ArrayList<Float>();
-		constC = new ArrayList<Float>();
-		constD = new ArrayList<Float>();
+		constA = new ArrayList<Double>();
+		constB = new ArrayList<Double>();
+		constC = new ArrayList<Double>();
+		constD = new ArrayList<Double>();
 		addV(x, y, k);
 		
 	}
 	
-	private void addV(int x, int y, float k){
+	private void addV(int x, int y, Float k){
+		// System.out.println("Adding vertex: " + x + ";" + y);
 		verticies.add(new int[]{x, y});
 		tangets.add(k);
 	}
@@ -85,11 +86,10 @@ public class Spline2D {
 		
 		Vector4f CVec = Matrix4f.transform(XMatInv, YVec, null);
 		
-		constA.add(CVec.getX());
-		constB.add(CVec.getY());
-		constC.add(CVec.getZ());
-		constD.add(CVec.getW());
-		
+		constA.add((double) CVec.getX());
+		constB.add((double) CVec.getY());
+		constC.add((double) CVec.getZ());
+		constD.add((double) CVec.getW());
 	}
 	
 	public void addVertex(int x, int y, float tangent){
@@ -114,9 +114,10 @@ public class Spline2D {
 	
 	public int getValue(int x){		
 		for(int i = 0;i < verticies.size(); i++){
-			//System.out.println(verticies.get(i)[0]);
 			if(verticies.get(i)[0] >= x){
-				//i--;
+				if(i>0){
+					i--;
+				}
 				int y = (int) (constA.get(i) * Math.pow(x, 3) + constB.get(i) * Math.pow(x, 2) + constC.get(i) * x + constD.get(i));
 				return y;
 			}

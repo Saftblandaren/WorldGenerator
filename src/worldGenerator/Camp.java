@@ -38,29 +38,28 @@ public class Camp {
 	}
 
 	protected void setOutline(){
-		outline = new Spline2D(posX, (int) (posY-sizeRadius*0.9), 0.0f);
 		int angle = 0;
+		int radius = (int) (sizeRadius*0.5 +  random.nextInt((int) (sizeRadius*0.5)));
+		outline = new Spline2D(angle, radius , 0.0f);
 		do{
 			angle += 24 + random.nextInt(24);
-			int radius = (int) (sizeRadius*0.8 +  random.nextInt((int) (sizeRadius*0.2)));
+			radius = (int) (sizeRadius*0.6 +  random.nextInt((int) (sizeRadius*0.4)));
 			outline.addVertex(angle, radius, 0f);
-		}while(angle<324);
+		}while(angle<312);
 		outline.close();
 	}
 	
 	protected void setPosition(){
-		System.out.print("\nSizeRadius: ");
-		System.out.print(sizeRadius);
+		System.out.println("\nSizeRadius: " + sizeRadius);
 		int minX = (int)(slotX * world.getSLOT_SIZE() + sizeRadius);
 		int minY = (int)(slotY * world.getSLOT_SIZE() + sizeRadius);
-		int delta = (int)(world.getSLOT_SIZE() - sizeRadius);
+		int delta = (int)(world.getSLOT_SIZE() - sizeRadius*2);
 		posX = minX + random.nextInt(delta);
 		posY = minY + random.nextInt(delta);
 		
 	}
 
 	public int getSizeRadius() {
-		
 		return sizeRadius;
 	}
 
@@ -72,23 +71,34 @@ public class Camp {
 		return posY;
 	}
 	
+	private int distanceTo(int x, int y){
+		int deltaX = x-posX;
+		int deltaY = y-posY;
+		int distance = (int) Math.sqrt((Math.pow(deltaY, 2) + Math.pow(deltaX, 2)));
+		return distance;
+	}
+	
+	public int distanceToCampArea(int x, int y){
+		return (distanceTo(x, y) - sizeRadius);
+	}
+	
 	public boolean isInCamp(int x, int y){
 		int deltaX = x-posX;
 		int deltaY = y-posY;
-		int angle;
-		if (deltaX == 0){
-			angle = 90 + 90 * Integer.signum(deltaY);
-		}else{
-			angle = (int) Math.toDegrees(Math.atan(deltaY/deltaX));
+		int angle = (int) Math.toDegrees(Math.atan2(deltaY, deltaX));
+		while(angle<0){
+			angle += 360;
 		}
-		int distance = (int) Math.pow(Math.pow(deltaY, 2) + Math.pow(deltaX, 2), 2);
+		int distance = distanceTo(x,y);
 		if (distance <= outline.getValue(angle)){
-			//System.out.println("True");
 			return true;
 		}
-		
-		//System.out.println("False");
 		return false;
 	}
+	
+	public Spline2D getOutline() {
+		return outline;
+	}
+	
 
 }
