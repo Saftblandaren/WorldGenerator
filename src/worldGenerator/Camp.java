@@ -5,7 +5,6 @@ import helpers.Spline2D;
 
 import java.util.Random;
 
-
 public class Camp {
 	
 	protected Random random;
@@ -50,7 +49,6 @@ public class Camp {
 	}
 	
 	protected void setPosition(){
-		System.out.println("\nSizeRadius: " + sizeRadius);
 		int minX = (int)(slotX * world.getSLOT_SIZE() + sizeRadius);
 		int minY = (int)(slotY * world.getSLOT_SIZE() + sizeRadius);
 		int delta = (int)(world.getSLOT_SIZE() - sizeRadius*2);
