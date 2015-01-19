@@ -8,7 +8,7 @@ public class World {
 	
 	private Random random;
 	private int slots;
-	//private final int SLOT_SIZE = 2048;
+	//private final int SLOT_SIZE = 1024;
 	private final int SLOT_SIZE = 256;
 	private int nCamps;
 	private Camp capital;
@@ -19,7 +19,7 @@ public class World {
 		this.random = random;
 		camps = new ArrayList<Camp>();
 		
-		// world could be 8x8 slots or 16x16 slots, each slot 8192x8192 pixels
+		// world could be 8x8 slots or 16x16 slots, each slot 1024x1024 pixels
 		slots = (int) Math.pow(2, (3 + random.nextInt(2)));
 		slots = 8;
 		
@@ -38,10 +38,8 @@ public class World {
 		nCamps = random.nextInt(2) + random.nextInt(slots/8) + slots / 16;
 		nCamps = 2;
 		
-		System.out.print("\nNumber of slots: ");
-		System.out.print(slots);
-		System.out.print("\nNumber of camps: ");
-		System.out.print(nCamps);
+		System.out.println("Number of slots: " + slots);
+		System.out.println("Number of camps: " + nCamps + "\n");
 		
 		if(slots > 8){
 			System.exit(0);
@@ -64,7 +62,6 @@ public class World {
 	public int getValue(int x, int y){
 		for(Camp camp:camps){
 			if(camp.isInCamp(x, y)){
-				//System.out.println("pixel");
 				return 1;
 			}
 		}
@@ -90,9 +87,7 @@ public class World {
 		}while(!free);
 		
 		return new int[]{x, y};
-		
 	}
-	
 
 	public Random getRandom() {
 		return random;
