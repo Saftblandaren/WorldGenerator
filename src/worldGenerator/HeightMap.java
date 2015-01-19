@@ -8,7 +8,7 @@ public class HeightMap {
 	
 	private int[][] meanHeightGrid;
 	private int meanHeightSpace;
-	private final int POINT_SPACE = 32;
+	private final int POINT_SPACE = 64;
 	private int[][] heightGrid;
 	private int size;
 	private Random random;
@@ -19,35 +19,41 @@ public class HeightMap {
 		heightGrid = new int[size+1][size+1];
 		
 		generateMeanGrid(40);
-		//assign random values
+
+		//generate main height grid with local variation
 		for(int y = 0; y <= size; y++){
 			for (int x = 0; x<= size; x++){
-				heightGrid[x][y] = getMeanGridValue(x, y);// - 40 + random.nextInt(81);
+				heightGrid[x][y] = getMeanGridValue(x, y) - 20 + random.nextInt(41);
 			}
 		}
 		
 	}
 	
 	private int getMeanGridValue(int x, int y){
+		
 		int a = meanHeightGrid[x / (meanHeightSpace)][y / (meanHeightSpace)];
 		int b = meanHeightGrid[x / (meanHeightSpace) + 1 ][y / (meanHeightSpace)];
 		int c = meanHeightGrid[x / (meanHeightSpace)][y / (meanHeightSpace) + 1];
 		int d = meanHeightGrid[x / (meanHeightSpace) + 1][y / (meanHeightSpace) + 1];
-		float xMod = (x % meanHeightSpace) / meanHeightSpace;
-		float yMod = (y % meanHeightSpace) / meanHeightSpace;
-		int x1Weight =(int)  (a * xMod + b * (1-xMod));
-		int x2Weight =(int)  (c * xMod + d * (1-xMod));
-		return (int) (x1Weight * yMod + x2Weight * (1-yMod));
+
+		int xMod = (x % meanHeightSpace);
+		int yMod = (y % meanHeightSpace);
+		
+		int x1Weight = a + (b-a)* xMod /meanHeightSpace ;
+		int x2Weight = c + (d-c)* xMod /meanHeightSpace ;
+		int yWeight = x1Weight + (x2Weight-x1Weight)* yMod /meanHeightSpace ;
+
+		return yWeight;
 	}
 	
 	private void generateMeanGrid(int safe){
 		meanHeightGrid = new int[5][5];
 		meanHeightSpace = (size) / 3;
-		System.out.println(meanHeightSpace);
+		
 		// Set value of corners
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < 2; j++){
-				int h = 20 + safe + (205 - safe) * random.nextInt(2);
+				int h = 20 + safe + (215 - 2*safe) * random.nextInt(2);
 				meanHeightGrid[i*4][j*4] = h;
 			}
 		}
@@ -55,7 +61,7 @@ public class HeightMap {
 		// Set value of horizontal edges
 		for(int i = 0; i < 2; i++){
 			for(int j=1; j<4; j++){
-				int hWeighted =  meanHeightGrid[i*4][0] * (j / 5) + meanHeightGrid[i*4][0] * (1- j / 5);
+				int hWeighted =  meanHeightGrid[i*4][0] + (meanHeightGrid[i*4][4] - meanHeightGrid[i*4][0]) * j / 5;
 				meanHeightGrid[i*4][j] = hWeighted - 25 + random.nextInt(51);
 			}
 		}
@@ -63,7 +69,7 @@ public class HeightMap {
 		// Set value of vertical lines
 				for(int i = 0; i < 5; i++){
 					for(int j=1; j<4; j++){
-						int hWeighted =  meanHeightGrid[0][i] * (j / 5) + meanHeightGrid[0][i] * (1- j / 5);
+						int hWeighted =  meanHeightGrid[0][i] + (meanHeightGrid[4][i] - meanHeightGrid[0][i]) * j / 5;
 						meanHeightGrid[j][i] = hWeighted - 25 + random.nextInt(51);
 					}
 				}
