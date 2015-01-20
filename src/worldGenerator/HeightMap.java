@@ -12,10 +12,12 @@ public class HeightMap {
 	private int[][] heightGrid;
 	private int size;
 	private Random random;
+	private World world;
 	
-	public HeightMap(int world_size, Random random) {
-		this.random = random;
-		size = world_size/POINT_SPACE;
+	public HeightMap(World world) {
+		this.world = world;
+		this.random = world.getRandom();
+		size = world.getSlots() * world.getSLOT_SIZE() / POINT_SPACE;
 		heightGrid = new int[size+1][size+1];
 		
 		generateMeanGrid(40);
@@ -23,7 +25,15 @@ public class HeightMap {
 		//generate main height grid with local variation
 		for(int y = 0; y <= size; y++){
 			for (int x = 0; x<= size; x++){
-				heightGrid[x][y] = getMeanGridValue(x, y) - 20 + random.nextInt(41);
+				int localVari = 20;
+				for(Camp camp:world.getCamps()){
+					if (camp.distanceToCampArea(x*POINT_SPACE, y*POINT_SPACE)<64){
+						localVari = 5;
+						break;
+					}
+				}
+				int localVari2 = localVari * 2 + 1;
+				heightGrid[x][y] = getMeanGridValue(x, y) - localVari + random.nextInt(localVari2);
 			}
 		}
 		

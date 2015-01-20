@@ -12,5 +12,15 @@ public class Capital extends Camp {
 		setPosition();
 		setOutline();
 	}
+	
+	public void createRoutes(){
+		for(Camp camp:world.getCamps()){
+			if(camp.equals(this)){
+				continue;
+			}
+			Route route = new Route(posX, posY, camp.getPosX(), camp.getPosY(), random);
+			world.addRoute(route);
+		}
+	}
 
 }

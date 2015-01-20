@@ -11,6 +11,7 @@ public class ImageGenerator {
 	public ImageGenerator(World world) {
 		
 		int size = world.getSLOT_SIZE();
+		//world.getSlots()
 		for(int slotX = 0; slotX < world.getSlots(); slotX++){
 			for(int slotY = 0; slotY < world.getSlots(); slotY++){
 				System.out.println("Generating slot: " + slotX + " ; " + slotY);
@@ -19,33 +20,17 @@ public class ImageGenerator {
 				File f_map = null;
 				File f_height = null;
 				
-				int a = 255;
-				int r=0;
-				int g=0;
-				int b=0;
-				
-				int p1 = (a<<24) | (r<<16) | (g<<8) | b;
-				
-				r=255;
-				g=255;
-				b=255;
-				
-				int p2 = (a<<24) | (r<<16) | (g<<8) | b;
-				
 				for(int x = 0; x < size; x++){
 					for(int y = 0; y < size; y++){
-						if(world.getValue(slotX*size+x, slotY*size+y) == 1){
-							map.setRGB(x, y, p2);
-						}else{
-							map.setRGB(x, y, p1);
-						}
-						int c = world.getHeight(slotX*size+x, slotY*size+y);
+						int p = world.getValue(slotX*size+x, slotY*size+y);
+						map.setRGB(x, y, p);
+						int ch = world.getHeight(slotX*size+x, slotY*size+y);
 						/*
 						//c = world.getRandom().nextInt(150)+50;
 						if( c<0 || c>255){
 							System.out.println("problem with : " + slotX*size+x + " , " + slotY*size+y);
 						}*/
-						int p = (a<<24) | (c<<16) | (c<<8) | c;
+						p = (255<<24) | (ch<<16) | (ch<<8) | ch;
 						height.setRGB(x, y, p);
 					}
 				}

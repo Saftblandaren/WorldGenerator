@@ -112,7 +112,10 @@ public class Spline2D {
 		
 	}
 	
-	public int getValue(int x){		
+	public Integer getValue(int x){		
+		if (x< verticies.get(0)[0]){
+			return null;
+		}
 		for(int i = 0;i < verticies.size(); i++){
 			if(verticies.get(i)[0] >= x){
 				if(i>0){
@@ -122,7 +125,7 @@ public class Spline2D {
 				return y;
 			}
 		}
-		return 0;
+		return null;
 		
 	}
 

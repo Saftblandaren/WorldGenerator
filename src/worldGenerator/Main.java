@@ -1,7 +1,5 @@
 package worldGenerator;
 
-import helpers.Spline2D;
-
 import java.util.Random;
 
 public class Main {
@@ -12,6 +10,8 @@ public class Main {
 		World world = new World(random);
 		new ImageGenerator(world);
 		System.out.println("\nDone!");
+		
+		//new Route(5, 10, 20, 20);
 	}
 
 }

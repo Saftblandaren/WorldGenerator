@@ -14,16 +14,29 @@ public class World {
 	private Camp capital;
 	private List<Camp> camps;
 	private HeightMap heightMap;
+	private List<Route> routes;
 
 	public World(Random random) {
 		this.random = random;
 		camps = new ArrayList<Camp>();
+		routes = new ArrayList<Route>();
 		
-		// world could be 8x8 slots or 16x16 slots, each slot 1024x1024 pixels
+		// world could be 8x8 slots or 16x16 slots, each slot 8192x8192 pixels
 		slots = (int) Math.pow(2, (3 + random.nextInt(2)));
 		slots = 8;
-		
-		// Alway one capital
+		setCamps();
+		((Capital) capital).createRoutes();
+		heightMap = new HeightMap(this);
+
+
+	}
+	
+	public void addRoute(Route route){
+		routes.add(route);
+	}
+	
+	private void setCamps(){
+		// Always one capital
 		int slotMeanIndex = (slots-1) / 2;
 		int capitalXSlot = slotMeanIndex - 1 + random.nextInt(4);
 		int capitalYSlot = slotMeanIndex;
@@ -49,23 +62,28 @@ public class World {
 			int[] slot = getFreeSlot();
 			camps.add(new Camp(this, slot[0], slot[1]));
 		}
-		
-		heightMap = new HeightMap(slots*SLOT_SIZE, random);
-		
-		
 	}
+	
 	
 	public int getHeight(int x,int y){
 		return heightMap.getHeight(x, y);
 	}
 	
 	public int getValue(int x, int y){
+		
+		int a = 255;
+		
 		for(Camp camp:camps){
 			if(camp.isInCamp(x, y)){
-				return 1;
+				return ((a<<24) | (255<<16) | (255<<8) | 255);
 			}
 		}
-		return 0;
+		for(Route route:routes){
+			if(route.isRoute(x, y)){
+				return ((a<<24) | (0<<16) | (255<<8) | 0);
+			}
+		}
+		return ((a<<24) | (0<<16) | (0<<8) | 0);
 	}
 	
 	private int[] getFreeSlot(){
@@ -87,7 +105,9 @@ public class World {
 		}while(!free);
 		
 		return new int[]{x, y};
+		
 	}
+	
 
 	public Random getRandom() {
 		return random;

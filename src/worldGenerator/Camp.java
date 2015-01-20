@@ -35,6 +35,14 @@ public class Camp {
 	public int getSlotY() {
 		return slotY;
 	}
+	
+	public void createRoutes(){
+		int nRoutes = random.nextInt(4);
+		for(int i=0; i< nRoutes; i++){
+			// highest possibility to connect to nearest edge
+			
+		}
+	}
 
 	protected void setOutline(){
 		int angle = 0;
