@@ -8,8 +8,8 @@ public class World {
 	
 	private Random random;
 	private int slots;
-	//private final int SLOT_SIZE = 1024;
-	private final int SLOT_SIZE = 256;
+	private final int SLOT_SIZE = 1024;
+	//private final int SLOT_SIZE = 512;
 	private int nCamps;
 	private Camp capital;
 	private List<Camp> camps;
@@ -32,7 +32,9 @@ public class World {
 
 
 	}
-	
+	public List<Route> getRoutes(){
+		return routes;
+	}
 	public void addRoute(Route route){
 		routes.add(route);
 	}
@@ -85,22 +87,24 @@ public class World {
 				return ((a<<24) | (0<<16) | (255<<8) | 0);
 			}
 		}
-		return ((a<<24) | (0<<16) | (0<<8) | 0);
+		return ((a<<24) | (10*x/SLOT_SIZE<<16) | (0<<8) | 10*y/SLOT_SIZE);
 	}
 	
 	private int[] getFreeSlot(){
-		boolean free = false;
+		boolean free = true;
 		int x;
 		int y;
 		do{
+			free = true;
 			x = 1 + random.nextInt(slots-2);
+			random.nextInt(slots-2);
 			y = 1 + random.nextInt(slots-2);
 			for(Camp camp:camps){
 				int dx = x - camp.getSlotX();
 				int dy = y - camp.getSlotY();
 				double distance = Math.sqrt((Math.pow(dx, 2) + Math.pow(dy, 2)));
-				if (distance > 1.5){
-					free = true;
+				if (distance < 1.5){
+					free = false;
 				}
 			}
 			

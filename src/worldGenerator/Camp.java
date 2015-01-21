@@ -37,28 +37,55 @@ public class Camp {
 	}
 	
 	public void createRoutes(){
-		int nRoutes = random.nextInt(4);
-		float west = (float) (0.5f - Math.pow(((float) posX / (4 * world.getSLOT_SIZE() * world.getSlots())),2));
-		float north = (float) (0.5f - Math.pow(((float) posX / (4 * world.getSLOT_SIZE() * world.getSlots())),2));
-		float east = 0.5f - west;
-		float south = 0.5f - north;
-		System.out.println(west + ", " + north + ", " + east + ", " + south);
-		for(int i=0; i< nRoutes; i++){
-			// highest possibility to connect to nearest edge
-			float where = random.nextFloat();
-			if(where<= west){
-				world.addRoute(new Route(posX, posY, 0, random.nextInt(world.getSLOT_SIZE() * world.getSlots()), random));
-				continue;
+		int nRoutes = 1 + random.nextInt(2);
+		//int nRoutes = 3;
+		for(int i = 0; i<nRoutes; i++){
+			int endX = 0;
+			int endY = 0;
+			boolean create = false;
+			for(int r = 0; true; r +=25){
+				if (posX-r <0 && random.nextInt(11)>9 && !create){
+					int dy = (int) Math.sqrt((Math.pow(r, 2) - Math.pow(posX,2)));
+					endX = -20;
+					endY = posY-dy+random.nextInt(dy);
+					//world.addRoute(new Route(posX, posY, 0, posY-dy+random.nextInt(dy), random));
+					create = true;
+				}
+				if (posY-r <0 && random.nextInt(11)>9 && !create){
+					int dx = (int) Math.sqrt((Math.pow(r, 2) - Math.pow(posY,2)));
+					endX = posX-dx+random.nextInt(dx);
+					endY = -20;
+					//world.addRoute(new Route(posX, posY, posX-dx+random.nextInt(dx), 0, random));
+					create = true;
+				}
+				if (posX+r > (world.getSLOT_SIZE() * world.getSlots()) && random.nextInt(11)>9 && !create){
+					int dy = (int) Math.sqrt((Math.pow(r, 2) - Math.pow(world.getSLOT_SIZE() * world.getSlots()-posX,2)));
+					endX = world.getSLOT_SIZE() * world.getSlots()+20;
+					endY = posY-dy+random.nextInt(dy);
+					//world.addRoute(new Route(posX, posY, world.getSLOT_SIZE() * world.getSlots(), posY-dy+random.nextInt(dy), random));
+					create = true;
+				}
+				if (posY+r > (world.getSLOT_SIZE() * world.getSlots()) && random.nextInt(11)>9 && !create){
+					int dx = (int) Math.sqrt((Math.pow(r, 2) - Math.pow(world.getSLOT_SIZE() * world.getSlots()-posY,2)));
+					endX = posX-dx+random.nextInt(dx);
+					endY = world.getSLOT_SIZE() * world.getSlots()+20;
+					
+					//world.addRoute(new Route(posX, posY, posX-dx+random.nextInt(dx), world.getSLOT_SIZE() * world.getSlots(), random));
+					create = true;
+				}
+				for(Route route:world.getRoutes()){
+
+					double distance = Math.sqrt(Math.pow((route.getEnd().x-endX), 2) + Math.pow((route.getEnd().y-endY), 2));
+					if (distance <1500){
+						create = false;
+					}
+				}
+				if(create){
+					System.out.println(endX + ", " + endY);
+					world.addRoute(new Route(posX, posY, endX, endY, random));
+					break;
+				}
 			}
-			if(where<= (west+north)){
-				world.addRoute(new Route(posX, posY, random.nextInt(world.getSLOT_SIZE() * world.getSlots()), 0, random));
-				continue;
-			}
-			if(where<= (west+north+east)){
-				world.addRoute(new Route(posX, posY, world.getSLOT_SIZE() * world.getSlots(), random.nextInt(world.getSLOT_SIZE() * world.getSlots()), random));
-				continue;
-			}
-			world.addRoute(new Route(posX, posY, random.nextInt(world.getSLOT_SIZE() * world.getSlots()), world.getSLOT_SIZE() * world.getSlots(), random));
 		}
 	}
 

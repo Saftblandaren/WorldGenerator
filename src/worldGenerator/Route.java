@@ -16,10 +16,12 @@ public class Route {
 	private Spline2D widthSpline;
 	private Spline2D routeSpline;
 	private Random random;
+	private Vector2f end;
 	
 	public Route(int startX, int startY, int endX, int endY, Random random) {
 		
 		this.random = random;
+		end = new Vector2f(endX, endY);
 		translate = new Vector2f(-startX, -startY);
 		vector = Vector2f.add(new Vector2f(endX, endY), translate, null);
 		createRotateMatrix();
@@ -41,15 +43,19 @@ public class Route {
 		*/
 	}
 	
+	public Vector2f getEnd() {
+		return end;
+	}
+
 	private void setWidth() {
-		int y = -10 + random.nextInt(21);
+		int y = -25 + random.nextInt(51);
 		int x = 0;
 		widthSpline = new Spline2D(x,y, 0.0f);
 		while(true){
 			y = 5 + random.nextInt(11);
-			x += 50 + random.nextInt(51);
+			x += 150 + random.nextInt(151);
 			widthSpline.addVertex(x, y);
-			if (x> (vector.length()-120)){
+			if (x> (vector.length()-450)){
 				y = 10 + random.nextInt(11);
 				break;
 			}
@@ -63,10 +69,10 @@ public class Route {
 		int x = 0;
 		routeSpline = new Spline2D(x, y, 0.0f);
 		while(true){
-			y = -60 + random.nextInt(121);
-			x += 80 + random.nextInt(81);
+			y = -100 + random.nextInt(201);
+			x += 150 + random.nextInt(151);
 			routeSpline.addVertex(x, y);
-			if (x> (vector.length()-180)){
+			if (x> (vector.length()-450)){
 				y = -10 + random.nextInt(21);
 				break;
 			}
@@ -76,26 +82,12 @@ public class Route {
 	}
 
 	private void createRotateMatrix(){
-		
-		// create perpendicular vector
-		Vector2f pVector = new Vector2f(-vector.getY(), vector.getX());
-		
-		// create result of rotation vectors
-		Vector2f resultVector = new Vector2f(vector.length(), 0);
-
-		// rotateMatrix * vector = resultVector
-		// rotateMatrix * pVector = resultpVector
 		rotateMatrix = new Matrix2f();
 		rotateMatrix.m00 = (float) (vector.length()/(vector.x + Math.pow(vector.y, 2)/vector.x));
 		rotateMatrix.m01 = -rotateMatrix.m00 * vector.y/vector.x;
 		rotateMatrix.m10 = rotateMatrix.m00 * vector.y/vector.x;
 		rotateMatrix.m11 = (float) (vector.length()/(vector.x + Math.pow(vector.y, 2)/vector.x));
-		/*
-		rotateMatrix.m01 = resultVector.x / (vector.y - vector.x * pVector.y / pVector.x);
-		rotateMatrix.m00 = -(vector.y / vector.x) * rotateMatrix.m01;
-		rotateMatrix.m10 = rotateMatrix.m01;
-		rotateMatrix.m11 = -(pVector.y / pVector.x) * rotateMatrix.m01;
-		*/		
+	
 	}
 	
 	public boolean isRoute(int x, int y){
