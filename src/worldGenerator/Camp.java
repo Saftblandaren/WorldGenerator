@@ -38,9 +38,27 @@ public class Camp {
 	
 	public void createRoutes(){
 		int nRoutes = random.nextInt(4);
+		float west = (float) (0.5f - Math.pow(((float) posX / (4 * world.getSLOT_SIZE() * world.getSlots())),2));
+		float north = (float) (0.5f - Math.pow(((float) posX / (4 * world.getSLOT_SIZE() * world.getSlots())),2));
+		float east = 0.5f - west;
+		float south = 0.5f - north;
+		System.out.println(west + ", " + north + ", " + east + ", " + south);
 		for(int i=0; i< nRoutes; i++){
 			// highest possibility to connect to nearest edge
-			
+			float where = random.nextFloat();
+			if(where<= west){
+				world.addRoute(new Route(posX, posY, 0, random.nextInt(world.getSLOT_SIZE() * world.getSlots()), random));
+				continue;
+			}
+			if(where<= (west+north)){
+				world.addRoute(new Route(posX, posY, random.nextInt(world.getSLOT_SIZE() * world.getSlots()), 0, random));
+				continue;
+			}
+			if(where<= (west+north+east)){
+				world.addRoute(new Route(posX, posY, world.getSLOT_SIZE() * world.getSlots(), random.nextInt(world.getSLOT_SIZE() * world.getSlots()), random));
+				continue;
+			}
+			world.addRoute(new Route(posX, posY, random.nextInt(world.getSLOT_SIZE() * world.getSlots()), world.getSLOT_SIZE() * world.getSlots(), random));
 		}
 	}
 

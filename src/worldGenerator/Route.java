@@ -18,7 +18,7 @@ public class Route {
 	private Random random;
 	
 	public Route(int startX, int startY, int endX, int endY, Random random) {
-		System.out.println(startX + ", " + startY + ", " + endX + ", " + endY);
+		
 		this.random = random;
 		translate = new Vector2f(-startX, -startY);
 		vector = Vector2f.add(new Vector2f(endX, endY), translate, null);
@@ -26,6 +26,8 @@ public class Route {
 		setRoute();
 		setWidth();
 		
+		/*
+		System.out.println(startX + ", " + startY + ", " + endX + ", " + endY);
 		System.out.println(vector.length());
 		System.out.println(vector.x + ", " + vector.y);
 		
@@ -36,6 +38,7 @@ public class Route {
 		Vector2f testV = Matrix2f.transform(rotateMatrix, vector, null);
 		System.out.println(testV.x + ", " + testV.y);
 		System.out.println("");
+		*/
 	}
 	
 	private void setWidth() {
@@ -60,10 +63,10 @@ public class Route {
 		int x = 0;
 		routeSpline = new Spline2D(x, y, 0.0f);
 		while(true){
-			y = -30 + random.nextInt(61);
-			x += 50 + random.nextInt(51);
+			y = -60 + random.nextInt(121);
+			x += 80 + random.nextInt(81);
 			routeSpline.addVertex(x, y);
-			if (x> (vector.length()-120)){
+			if (x> (vector.length()-180)){
 				y = -10 + random.nextInt(21);
 				break;
 			}

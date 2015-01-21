@@ -25,7 +25,9 @@ public class World {
 		slots = (int) Math.pow(2, (3 + random.nextInt(2)));
 		slots = 8;
 		setCamps();
-		((Capital) capital).createRoutes();
+		for(Camp camp: camps){
+			camp.createRoutes();
+		}
 		heightMap = new HeightMap(this);
 
 
