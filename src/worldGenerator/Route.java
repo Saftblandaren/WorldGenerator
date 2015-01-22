@@ -17,13 +17,17 @@ public class Route {
 	private Spline2D routeSpline;
 	private Random random;
 	private Vector2f end;
+	private int pointSpread;
 	
-	public Route(int startX, int startY, int endX, int endY, Random random) {
+	public Route(int startX, int startY, int endX, int endY, World world) {
 		
-		this.random = random;
+		this.random = world.getRandom();
 		end = new Vector2f(endX, endY);
 		translate = new Vector2f(-startX, -startY);
 		vector = Vector2f.add(new Vector2f(endX, endY), translate, null);
+		pointSpread = Math.min((int) (vector.length()/8), world.getSLOT_SIZE() * world.getSlots() / 32);
+		System.out.println("point_spread: " + pointSpread);
+		
 		createRotateMatrix();
 		setRoute();
 		setWidth();
@@ -48,14 +52,14 @@ public class Route {
 	}
 
 	private void setWidth() {
-		int y = -25 + random.nextInt(51);
+		int y = 5 + random.nextInt(16);
 		int x = 0;
 		widthSpline = new Spline2D(x,y, 0.0f);
 		while(true){
-			y = 5 + random.nextInt(11);
-			x += 150 + random.nextInt(151);
+			y = 5 + random.nextInt(16);
+			x += pointSpread + random.nextInt(pointSpread);
 			widthSpline.addVertex(x, y);
-			if (x> (vector.length()-450)){
+			if (x> (vector.length()-pointSpread*2.5)){
 				y = 10 + random.nextInt(11);
 				break;
 			}
@@ -69,10 +73,10 @@ public class Route {
 		int x = 0;
 		routeSpline = new Spline2D(x, y, 0.0f);
 		while(true){
-			y = -100 + random.nextInt(201);
-			x += 150 + random.nextInt(151);
+			y = -pointSpread/2 + random.nextInt(pointSpread+1);
+			x += pointSpread + random.nextInt(pointSpread);
 			routeSpline.addVertex(x, y);
-			if (x> (vector.length()-450)){
+			if (x> (vector.length()-pointSpread*2.5)){
 				y = -10 + random.nextInt(21);
 				break;
 			}

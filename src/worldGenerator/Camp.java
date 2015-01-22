@@ -81,8 +81,8 @@ public class Camp {
 					}
 				}
 				if(create){
-					System.out.println(endX + ", " + endY);
-					world.addRoute(new Route(posX, posY, endX, endY, random));
+					//System.out.println(endX + ", " + endY);
+					world.addRoute(new Route(posX, posY, endX, endY, world));
 					break;
 				}
 			}
