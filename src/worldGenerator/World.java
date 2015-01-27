@@ -8,8 +8,8 @@ public class World {
 	
 	private Random random;
 	private int slots;
-	private final int SLOT_SIZE = 1024;
-	//private final int SLOT_SIZE = 512;
+	//private final int SLOT_SIZE = 1024;
+	private final int SLOT_SIZE = 256;
 	private int nCamps;
 	private Camp capital;
 	private List<Camp> camps;
@@ -20,15 +20,20 @@ public class World {
 		this.random = random;
 		camps = new ArrayList<Camp>();
 		routes = new ArrayList<Route>();
-		
+
 		// world could be 8x8 slots or 16x16 slots, each slot 8192x8192 pixels
 		slots = (int) Math.pow(2, (3 + random.nextInt(2)));
 		slots = 8;
+		
+		heightMap = new HeightMap(this);
+		
 		setCamps();
 		for(Camp camp: camps){
 			camp.createRoutes();
 		}
-		heightMap = new HeightMap(this);
+		
+		heightMap.finalizeHeightGrid();
+		new River(0, 200, this);
 
 
 	}

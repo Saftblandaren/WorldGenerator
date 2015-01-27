@@ -26,7 +26,7 @@ public class Route {
 		translate = new Vector2f(-startX, -startY);
 		vector = Vector2f.add(new Vector2f(endX, endY), translate, null);
 		pointSpread = Math.min((int) (vector.length()/8), world.getSLOT_SIZE() * world.getSlots() / 32);
-		System.out.println("point_spread: " + pointSpread);
+		// System.out.println("point_spread: " + pointSpread);
 		
 		createRotateMatrix();
 		setRoute();

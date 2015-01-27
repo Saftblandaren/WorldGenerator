@@ -22,6 +22,9 @@ public class HeightMap {
 		
 		generateMeanGrid(40);
 
+	}
+	
+	public void finalizeHeightGrid(){
 		//generate main height grid with local variation
 		for(int y = 0; y <= size; y++){
 			for (int x = 0; x<= size; x++){
@@ -39,7 +42,7 @@ public class HeightMap {
 		
 	}
 	
-	private int getMeanGridValue(int x, int y){
+	public int getMeanGridValue(int x, int y){
 		
 		int a = meanHeightGrid[x / (meanHeightSpace)][y / (meanHeightSpace)];
 		int b = meanHeightGrid[x / (meanHeightSpace) + 1 ][y / (meanHeightSpace)];
@@ -119,8 +122,5 @@ public class HeightMap {
 		return tmp_spline3.getValue(weightY);
 	}
 	
-	public void increaseGridHeight(int x, int y, int value){
-		heightGrid[x/POINT_SPACE][y/POINT_SPACE] += value;
-	}
 
 }
