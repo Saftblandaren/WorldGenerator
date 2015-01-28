@@ -48,9 +48,14 @@ public class River {
 		
 		createTempPath();
 		
-		createRotateMatrix();
-		setRoute();
-		setWidth();
+		for(int[] point:tempPath){
+			System.out.println("x: " + point[0] + " y: " + point[1]);
+		}
+		System.exit(0);
+		
+		//createRotateMatrix();
+		//setRoute();
+		//setWidth();
 	}
 	
 	public Vector2f getEnd() {
@@ -58,24 +63,42 @@ public class River {
 	}
 	
 	private void createTempPath(){
-		
+		int angle = 0;
 		if (tempPath.get(0)[0] == 0){
 			// west to east
-			nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 0);
+			angle = 0;
+			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 0);
 			
 		}else if(tempPath.get(0)[0] == world.getSLOT_SIZE() * world.getSlots()){
 			// east to west
-			nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 180);
+			angle = 180;
+			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 180);
 			
 		}else if(tempPath.get(0)[1] == 0){
 			// north to south
-			nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], -90);
+			angle = -90;
+			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], -90);
 			
 		}else if(tempPath.get(0)[1] == world.getSLOT_SIZE() * world.getSlots()){
 			//south to north
-			nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 90);
+			angle = 90;
+			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 90);
+		}
+		for( int i = 0; continueNextPoint(); i++){
+			tempPath.add(nextPoint(tempPath.get(i)[0], tempPath.get(i)[1], angle));
 		}
 		
+	}
+	
+	private boolean continueNextPoint(){
+		int li = tempPath.size() -1;
+		if(tempPath.get(li)[0] < 0 || tempPath.get(li)[0] > world.getSLOT_SIZE() * world.getSlots()){
+			return false;
+		}
+		if(tempPath.get(li)[1] < 0 || tempPath.get(li)[1] > world.getSLOT_SIZE() * world.getSlots()){
+			return false;
+		}
+		return true;
 	}
 	
 	private int[] nextPoint(int x, int y, int direction){
@@ -95,10 +118,10 @@ public class River {
 			for(Camp camp:world.getCamps()){
 				score += world.getSLOT_SIZE()/camp.distanceToCampArea(nx, ny);
 			}
-			if (world.getHeight(nx, ny)< refH){
+			if (world.getMeanHeight(nx, ny)< refH){
 				score += 100;
 			}
-			score += Math.abs(255 -  refH - world.getHeight(nx, ny));
+			score += Math.abs(255 -  refH - world.getMeanHeight(nx, ny));
 			
 			
 			totalScore += score;
@@ -109,13 +132,12 @@ public class River {
 		
 		
 		for (int[] point: options){
-			System.out.println(point[0] + ", " + point[1] + ", " + point[2]);
+			//System.out.println(point[0] + ", " + point[1] + ", " + point[2]);
 			if(random.nextInt(totalScore) > point[0]){
-				System.out.println("true");
-				//return new int[]{point[1], point[2]};
+				//System.out.println("true");
+				return new int[]{point[1], point[2]};
 			}
 		}
-		System.exit(0);
 		
 		
 		return new int[]{options.get(options.size()-1)[1], options.get(options.size()-1)[2]};

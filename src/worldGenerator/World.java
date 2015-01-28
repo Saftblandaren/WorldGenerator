@@ -32,9 +32,10 @@ public class World {
 			camp.createRoutes();
 		}
 		
+		
+		new River(0, SLOT_SIZE*slots/2, this);
+		
 		heightMap.finalizeHeightGrid();
-		new River(0, 200, this);
-
 
 	}
 	public List<Route> getRoutes(){
@@ -76,6 +77,10 @@ public class World {
 	
 	public int getHeight(int x,int y){
 		return heightMap.getHeight(x, y);
+	}
+	
+	public int getMeanHeight(int x, int y){
+		return heightMap.getMeanGridValue(x/heightMap.POINT_SPACE, y/heightMap.POINT_SPACE);
 	}
 	
 	public int getValue(int x, int y){

@@ -8,7 +8,7 @@ public class HeightMap {
 	
 	private int[][] meanHeightGrid;
 	private int meanHeightSpace;
-	private final int POINT_SPACE = 64;
+	public final int POINT_SPACE = 64;
 	private int[][] heightGrid;
 	private int size;
 	private Random random;
