@@ -3,7 +3,6 @@ package worldGenerator;
 import helpers.Spline2D;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -45,19 +44,40 @@ public class River {
 		translate = new Vector2f(-startX, -startY);
 		tempPath.add(new int[]{startX, startY});
 		pointSpread = world.getSLOT_SIZE() * world.getSlots() / 32;
-		
 		createTempPath();
+		int[] lastPoint = tempPath.get(tempPath.size()-1);
+		vector = Vector2f.add(new Vector2f(lastPoint[0],lastPoint[1]), translate, null);
 		
 		for(int[] point:tempPath){
 			System.out.println("x: " + point[0] + " y: " + point[1]);
 		}
-		System.exit(0);
+
 		
-		//createRotateMatrix();
-		//setRoute();
-		//setWidth();
+		createRotateMatrix();
+		createRiverSpline();
+		setWidth();
 	}
 	
+	private void createRiverSpline() {
+		boolean started = false;
+		for(int[] point:tempPath){
+			Vector2f vecP = globalToLocal(point[0], point[1]);
+			if(started){
+				riverSpline.addVertex((int) vecP.x,(int) vecP.y);
+				continue;
+			}
+			riverSpline = new Spline2D((int) vecP.x,(int) vecP.y, 0.0f);
+			started = true;
+		}
+		
+	}
+	
+	private Vector2f globalToLocal(int x, int y){
+		Vector2f vecT =  Vector2f.add(new Vector2f(x, y), translate, null);
+		Vector2f vecR = Matrix2f.transform(rotateMatrix, vecT, null);
+		return vecR;
+	}
+
 	public Vector2f getEnd() {
 		return end;
 	}
@@ -67,22 +87,18 @@ public class River {
 		if (tempPath.get(0)[0] == 0){
 			// west to east
 			angle = 0;
-			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 0);
 			
 		}else if(tempPath.get(0)[0] == world.getSLOT_SIZE() * world.getSlots()){
 			// east to west
 			angle = 180;
-			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 180);
 			
 		}else if(tempPath.get(0)[1] == 0){
 			// north to south
 			angle = -90;
-			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], -90);
 			
 		}else if(tempPath.get(0)[1] == world.getSLOT_SIZE() * world.getSlots()){
 			//south to north
 			angle = 90;
-			//nextPoint(tempPath.get(0)[0], tempPath.get(0)[1], 90);
 		}
 		for( int i = 0; continueNextPoint(); i++){
 			tempPath.add(nextPoint(tempPath.get(i)[0], tempPath.get(i)[1], angle));
@@ -122,26 +138,20 @@ public class River {
 				score += 100;
 			}
 			score += Math.abs(255 -  refH - world.getMeanHeight(nx, ny));
-			
-			
+
 			totalScore += score;
 			options.add(new int[]{score, nx, ny});
 			
 		}
 		Collections.sort(options, new PointComparator());
-		
-		
+
 		for (int[] point: options){
-			//System.out.println(point[0] + ", " + point[1] + ", " + point[2]);
 			if(random.nextInt(totalScore) > point[0]){
-				//System.out.println("true");
 				return new int[]{point[1], point[2]};
 			}
 		}
-		
-		
+
 		return new int[]{options.get(options.size()-1)[1], options.get(options.size()-1)[2]};
-		
 	}
 
 	private void setWidth() {
@@ -161,22 +171,6 @@ public class River {
 		
 	}
 
-	private void setRoute() {
-		int y = -10 + random.nextInt(21);
-		int x = 0;
-		riverSpline = new Spline2D(x, y, 0.0f);
-		while(true){
-			y = -pointSpread/2 + random.nextInt(pointSpread+1);
-			x += pointSpread + random.nextInt(pointSpread);
-			riverSpline.addVertex(x, y);
-			if (x> (vector.length()-pointSpread*2.5)){
-				y = -10 + random.nextInt(21);
-				break;
-			}
-		}
-		riverSpline.addVertex((int) Math.ceil(vector.length()), y);
-		
-	}
 
 	private void createRotateMatrix(){
 		rotateMatrix = new Matrix2f();
@@ -187,19 +181,15 @@ public class River {
 	
 	}
 	
-	public boolean isRoute(int x, int y){
-		Vector2f vecT =  Vector2f.add(new Vector2f(x, y), translate, null);
-		Vector2f vecR = Matrix2f.transform(rotateMatrix, vecT, null);
-		Integer width = widthSpline.getValue((int) vecR.x); 
-		Integer route = riverSpline.getValue((int) vecR.x); 
-		if(width == null || route == null){
-			return false;
-		}
-		if(Math.abs(route-vecR.y) <= width){
-			return true;
+	public int distanceTo(int x, int y){
+		Vector2f point =  globalToLocal(x,y);
+		Integer width = widthSpline.getValue((int) point.x); 
+		Integer river = riverSpline.getValue((int) point.x); 
+		if(width == null || river == null){
+			return 10000;
 		}
 		
-		return false;
+		return (int) (Math.abs(river-point.y) - width);
 		
 	}
 

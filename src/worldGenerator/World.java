@@ -15,6 +15,7 @@ public class World {
 	private List<Camp> camps;
 	private HeightMap heightMap;
 	private List<Route> routes;
+	public River river;
 
 	public World(Random random) {
 		this.random = random;
@@ -33,7 +34,7 @@ public class World {
 		}
 		
 		
-		new River(0, SLOT_SIZE*slots/2, this);
+		river = new River(0, SLOT_SIZE*slots/2, this);
 		
 		heightMap.finalizeHeightGrid();
 

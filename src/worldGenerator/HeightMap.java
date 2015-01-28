@@ -37,6 +37,9 @@ public class HeightMap {
 				}
 				int localVari2 = localVari * 2 + 1;
 				heightGrid[x][y] = getMeanGridValue(x, y) - localVari + random.nextInt(localVari2);
+				if (world.river.distanceTo(x*POINT_SPACE,y*POINT_SPACE) < POINT_SPACE){
+					heightGrid[x][y] = 0;
+				}
 			}
 		}
 		
