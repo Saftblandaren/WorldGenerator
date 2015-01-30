@@ -9,7 +9,7 @@ public class World {
 	private Random random;
 	private int slots;
 	//private final int SLOT_SIZE = 1024;
-	private final int SLOT_SIZE = 256;
+	private final int SLOT_SIZE = 512;
 	private int nCamps;
 	private Camp capital;
 	private List<Camp> camps;

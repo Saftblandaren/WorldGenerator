@@ -1,6 +1,7 @@
 package worldGenerator;
 
 import helpers.Spline2D;
+import helpers.Spline2Dextended;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.Random;
 
 import org.lwjgl.util.vector.Matrix2f;
 import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 class PointComparator implements Comparator<int[]>{
 
@@ -30,8 +32,8 @@ public class River {
 	private Vector2f vector;
 	private Vector2f translate;
 	private Matrix2f rotateMatrix;
-	private Spline2D widthSpline;
-	private Spline2D riverSpline;
+	private Spline2Dextended widthSpline;
+	private Spline2Dextended riverSpline;
 	private Random random;
 	private Vector2f end;
 	private int pointSpread;
@@ -63,10 +65,10 @@ public class River {
 		for(int[] point:tempPath){
 			Vector2f vecP = globalToLocal(point[0], point[1]);
 			if(started){
-				riverSpline.addVertex((int) vecP.x,(int) vecP.y);
+				riverSpline.addPoint(new Vector2f(vecP.x,vecP.y));
 				continue;
 			}
-			riverSpline = new Spline2D((int) vecP.x,(int) vecP.y, 0.0f);
+			riverSpline = new Spline2Dextended(new Vector3f(vecP.x,vecP.y, 0.0f));
 			started = true;
 		}
 		
@@ -157,17 +159,17 @@ public class River {
 	private void setWidth() {
 		int y = 5 + random.nextInt(16);
 		int x = 0;
-		widthSpline = new Spline2D(x,y, 0.0f);
+		widthSpline = new Spline2Dextended(new Vector3f(x,y, 0.0f));
 		while(true){
 			y = 5 + random.nextInt(16);
 			x += pointSpread + random.nextInt(pointSpread);
-			widthSpline.addVertex(x, y);
+			widthSpline.addPoint(new Vector2f(x, y));
 			if (x> (vector.length()-pointSpread*2.5)){
 				y = 10 + random.nextInt(11);
 				break;
 			}
 		}
-		widthSpline.addVertex((int) Math.ceil(vector.length()), y);
+		widthSpline.addPoint(new Vector2f((float) Math.ceil(vector.length()), y));
 		
 	}
 
@@ -183,13 +185,15 @@ public class River {
 	
 	public int distanceTo(int x, int y){
 		Vector2f point =  globalToLocal(x,y);
-		Integer width = widthSpline.getValue((int) point.x); 
-		Integer river = riverSpline.getValue((int) point.x); 
-		if(width == null || river == null){
+		Float widthF = widthSpline.getValue((int) point.x); 
+		Float riverF = riverSpline.getValue(point.x); 
+		if(widthF == null || riverF == null){
 			return 10000;
 		}
 		
-		return (int) (Math.abs(river-point.y) - width);
+		int riverI = (int) Math.round(riverF);
+		int widthI = (int) Math.round(widthF);
+		return (int) (Math.abs(riverI-point.y) - widthI);
 		
 	}
 
