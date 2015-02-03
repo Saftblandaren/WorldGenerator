@@ -1,5 +1,6 @@
 package worldGenerator;
 
+import helpers.PointComparator;
 import helpers.Spline2D;
 import helpers.Spline2Dextended;
 
@@ -13,19 +14,6 @@ import org.lwjgl.util.vector.Matrix2f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-class PointComparator implements Comparator<int[]>{
-
-	public int compare(int[] arg0, int[] arg1) {
-		if (arg0[0]>arg1[0]){
-			return 1;
-		}else if(arg1[0]>arg0[0]){
-			return -1;
-		}
-		return 0;
-	}
-	
-}
-
 public class River {
 	
 	private List<int[]> tempPath = new ArrayList<int[]>();
@@ -38,6 +26,7 @@ public class River {
 	private Vector2f end;
 	private int pointSpread;
 	private World world;
+	private int maxWidth;
 	
 	public River(int startX, int startY, World world) {
 		
@@ -50,14 +39,17 @@ public class River {
 		int[] lastPoint = tempPath.get(tempPath.size()-1);
 		vector = Vector2f.add(new Vector2f(lastPoint[0],lastPoint[1]), translate, null);
 		
+		
+		/*
 		for(int[] point:tempPath){
 			System.out.println("x: " + point[0] + " y: " + point[1]);
 		}
-
+		*/
 		
 		createRotateMatrix();
 		createRiverSpline();
 		setWidth();
+		
 	}
 	
 	private void createRiverSpline() {
@@ -96,11 +88,11 @@ public class River {
 			
 		}else if(tempPath.get(0)[1] == 0){
 			// north to south
-			angle = -90;
+			angle = 90;
 			
 		}else if(tempPath.get(0)[1] == world.getSLOT_SIZE() * world.getSlots()){
 			//south to north
-			angle = 90;
+			angle = -90;
 		}
 		for( int i = 0; continueNextPoint(); i++){
 			tempPath.add(nextPoint(tempPath.get(i)[0], tempPath.get(i)[1], angle));
@@ -158,12 +150,16 @@ public class River {
 
 	private void setWidth() {
 		int y = 5 + random.nextInt(16);
+		maxWidth = y;
 		int x = 0;
 		widthSpline = new Spline2Dextended(new Vector3f(x,y, 0.0f));
 		while(true){
 			y = 5 + random.nextInt(16);
 			x += pointSpread + random.nextInt(pointSpread);
 			widthSpline.addPoint(new Vector2f(x, y));
+			if( y > maxWidth){
+				maxWidth = y;
+			}
 			if (x> (vector.length()-pointSpread*2.5)){
 				y = 10 + random.nextInt(11);
 				break;
@@ -183,6 +179,10 @@ public class River {
 	
 	}
 	
+	public int getMaxWidth() {
+		return maxWidth;
+	}
+
 	public int distanceTo(int x, int y){
 		Vector2f point =  globalToLocal(x,y);
 		Float widthF = widthSpline.getValue((int) point.x); 

@@ -28,7 +28,7 @@ public class HeightMap {
 		//generate main height grid with local variation
 		for(int y = 0; y <= size; y++){
 			for (int x = 0; x<= size; x++){
-				int localVari = 20;
+				int localVari = 10;
 				for(Camp camp:world.getCamps()){
 					if (camp.distanceToCampArea(x*POINT_SPACE, y*POINT_SPACE)<64){
 						localVari = 5;
@@ -37,9 +37,12 @@ public class HeightMap {
 				}
 				int localVari2 = localVari * 2 + 1;
 				heightGrid[x][y] = getMeanGridValue(x, y) - localVari + random.nextInt(localVari2);
-				if (world.river.distanceTo(x*POINT_SPACE,y*POINT_SPACE) < POINT_SPACE){
-					heightGrid[x][y] = 0;
+				for(River r : world.getRivers()){
+					if (r.distanceTo(x*POINT_SPACE,y*POINT_SPACE) < POINT_SPACE){
+						heightGrid[x][y] = 0;
+					}
 				}
+
 			}
 		}
 		

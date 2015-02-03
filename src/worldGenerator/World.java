@@ -1,6 +1,9 @@
 package worldGenerator;
 
+import helpers.PointComparator;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -15,7 +18,7 @@ public class World {
 	private List<Camp> camps;
 	private HeightMap heightMap;
 	private List<Route> routes;
-	public River river;
+	public List<River> rivers;
 
 	public World(Random random) {
 		this.random = random;
@@ -33,12 +36,42 @@ public class World {
 			camp.createRoutes();
 		}
 		
-		
-		river = new River(0, SLOT_SIZE*slots/2, this);
+		generateRivers();
 		
 		heightMap.finalizeHeightGrid();
 
 	}
+	private void generateRivers() {
+		rivers = new ArrayList<River>();
+		List<int[]> startOptions = new ArrayList<int[]>();
+		for(int x = 1; x < 7; x++){
+			startOptions.add(new int[]{getMeanHeight(x*SLOT_SIZE*slots/7, 0), x*SLOT_SIZE*slots/7, 0} );
+			startOptions.add(new int[]{getMeanHeight(x*SLOT_SIZE*slots/7, SLOT_SIZE*slots), x*SLOT_SIZE*slots/7, SLOT_SIZE*slots} );
+		}
+		for(int y = 1; y < 7; y++){
+			startOptions.add(new int[]{getMeanHeight(0, y*SLOT_SIZE*slots/7), 0,  y*SLOT_SIZE*slots/7} );
+			startOptions.add(new int[]{getMeanHeight(SLOT_SIZE*slots, y*SLOT_SIZE*slots/7),SLOT_SIZE*slots,  y*SLOT_SIZE*slots/7} );
+		}
+		
+		Collections.sort(startOptions, new PointComparator());
+		
+		int nRivers = 1 + random.nextInt(3);
+		
+		System.out.println("Number of rivers: " + nRivers);
+		
+		
+		//for(int i = 0; (rivers.size() < nRivers && i < startOptions.size()); i++){
+		for(int i = 0; (rivers.size() < nRivers); i++){
+			if(random.nextInt(4) == 0){
+				int x = startOptions.get(i)[1];
+				int y = startOptions.get(i)[2];
+				rivers.add(new River(x, y, this));
+			}
+		}
+		
+	}
+	
+	
 	public List<Route> getRoutes(){
 		return routes;
 	}
@@ -148,6 +181,9 @@ public class World {
 
 	public int getSLOT_SIZE() {
 		return SLOT_SIZE;
+	}
+	public List<River> getRivers() {
+		return rivers;
 	}
 	
 	
