@@ -35,13 +35,16 @@ public class HeightMap {
 						break;
 					}
 				}
-				int localVari2 = localVari * 2 + 1;
-				heightGrid[x][y] = getMeanGridValue(x, y) - localVari + random.nextInt(localVari2);
+				
+				int riverValley = 0;
 				for(River r : world.getRivers()){
-					if (r.distanceTo(x*POINT_SPACE,y*POINT_SPACE) < POINT_SPACE){
-						heightGrid[x][y] = 0;
+					if (r.distanceTo(x*POINT_SPACE, y*POINT_SPACE) < POINT_SPACE){
+						riverValley = 20 * (r.getMaxWidth()+POINT_SPACE-r.distanceTo(x*POINT_SPACE, y*POINT_SPACE))/(r.getMaxWidth()+POINT_SPACE);
+						System.out.println("riverValley: " + riverValley);
 					}
 				}
+				int localVari2 = localVari * 2 + 1;
+				heightGrid[x][y] = getMeanGridValue(x, y) - localVari + random.nextInt(localVari2) - riverValley;
 
 			}
 		}

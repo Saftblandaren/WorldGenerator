@@ -62,7 +62,7 @@ public class World {
 		
 		//for(int i = 0; (rivers.size() < nRivers && i < startOptions.size()); i++){
 		for(int i = 0; (rivers.size() < nRivers); i++){
-			if(random.nextInt(4) == 0){
+			if(random.nextInt(3) == 0){
 				int x = startOptions.get(i)[1];
 				int y = startOptions.get(i)[2];
 				rivers.add(new River(x, y, this));

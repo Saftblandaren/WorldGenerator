@@ -1,12 +1,10 @@
 package worldGenerator;
 
 import helpers.PointComparator;
-import helpers.Spline2D;
 import helpers.Spline2Dextended;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -94,8 +92,10 @@ public class River {
 			//south to north
 			angle = -90;
 		}
+		System.out.println("angle: " + angle);
 		for( int i = 0; continueNextPoint(); i++){
 			tempPath.add(nextPoint(tempPath.get(i)[0], tempPath.get(i)[1], angle));
+			//System.out.println("x: " + tempPath.get(tempPath.size()-1)[0] + " y: " + tempPath.get(tempPath.size()-1)[1]);
 		}
 		
 	}
@@ -121,12 +121,16 @@ public class River {
 		int score; // low score is good
 		int refH = world.getHeight(x, y);
 		for(int angle = - 60; angle <= 60; angle += 30){
-			angle += direction;
-			nx = (int) (x + distance * Math.cos(Math.toRadians(angle)));
-			ny = (int) (y + distance * Math.sin(Math.toRadians(angle)));
+			nx = (int) (x + distance * Math.cos(Math.toRadians(angle + direction)));
+			ny = (int) (y + distance * Math.sin(Math.toRadians(angle + direction)));
 			score = 0;
 			for(Camp camp:world.getCamps()){
-				score += world.getSLOT_SIZE()/camp.distanceToCampArea(nx, ny);
+				if (camp.distanceToCampArea(nx, ny) < 1 ){
+					score += 500;
+				}else{
+					score += 4 * world.getSLOT_SIZE()/camp.distanceToCampArea(nx, ny);
+				}
+				
 			}
 			if (world.getMeanHeight(nx, ny)< refH){
 				score += 100;
