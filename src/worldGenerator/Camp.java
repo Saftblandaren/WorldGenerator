@@ -1,7 +1,6 @@
 
 package worldGenerator;
 
-import helpers.Spline2D;
 import helpers.Spline2Dextended;
 
 import java.util.Random;

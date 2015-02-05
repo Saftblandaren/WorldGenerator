@@ -86,15 +86,15 @@ public class Route {
 			for (River r: world.getRivers()){
 				if (r.distanceTo(nx, ny)<=0){
 					// point in river step-increase score
-					score += 150;
+					score += 15000;
 				}else{
-					score += 100/r.distanceTo(nx, ny);
+					score += 10000/r.distanceTo(nx, ny);
 				}
 			}
 			
 			int dist2End = (int) Math.sqrt(Math.pow(end.x - nx, end.y - ny));
 			
-			score += 3*dist2End/distance;
+			score += dist2End/distance;
 		
 			totalScore += score;
 			options.add(new int[]{score, nx, ny});
