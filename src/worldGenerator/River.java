@@ -92,7 +92,7 @@ public class River {
 			//south to north
 			angle = -90;
 		}
-		System.out.println("angle: " + angle);
+		System.out.println("River direction: " + angle);
 		for( int i = 0; continueNextPoint(); i++){
 			tempPath.add(nextPoint(tempPath.get(i)[0], tempPath.get(i)[1], angle));
 			//System.out.println("x: " + tempPath.get(tempPath.size()-1)[0] + " y: " + tempPath.get(tempPath.size()-1)[1]);

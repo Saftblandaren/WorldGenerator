@@ -36,7 +36,7 @@ public class Route {
 		pointSpread = Math.min((int) (vector.length()/8), world.getSLOT_SIZE() * world.getSlots() / 32);
 		direction = (int) Math.toDegrees(Math.atan2(endY-startY, endX-startX));
 		
-		System.out.println("direction: " + direction);
+		System.out.println("Route direction: " + direction);
 		
 		createRotateMatrix();
 		setRoute();
@@ -81,6 +81,7 @@ public class Route {
 			nx = (int) (x + distance * Math.cos(Math.toRadians(angle + direction)));
 			ny = (int) (y + distance * Math.sin(Math.toRadians(angle + direction)));
 			score = 1;
+			score += Math.abs(angle);
 
 			for (River r: world.getRivers()){
 				if (r.distanceTo(nx, ny)<=0){
@@ -99,6 +100,7 @@ public class Route {
 			options.add(new int[]{score, nx, ny});
 			
 		}
+		System.out.println("Total score: " + totalScore);
 		Collections.sort(options, new PointComparator());
 
 		for (int[] point: options){
@@ -120,13 +122,15 @@ public class Route {
 	private void setRoute() {
 		Vector2f nPoint = new Vector2f(0, 0);
 		routeSpline = new Spline2Dextended(new Vector3f(nPoint.x, nPoint.y, 0.0f));
+		int[] point = nextPoint((int) -translate.x, (int) -translate.y, direction);
 		while (nPoint.x < vector.length()- 5*pointSpread/2){
-			int[]point = nextPoint((int) nPoint.x,(int) nPoint.y, direction);
-			System.out.println("point: " + point[0] + ", " + point[1]);
+			//System.out.println("point: " + point[0] + ", " + point[1]);
 			nPoint = globalToLocal(point[0], point[1]);
+			//System.out.println("nPoint: " + nPoint.x + ", " + nPoint.y);
 			routeSpline.addPoint(nPoint);
+			point = nextPoint(point[0], point[1], direction);
 		}
-		routeSpline.addPoint(vector);
+		routeSpline.addPoint(new Vector2f(vector.length(), 0));
 	}
 
 	private void createRotateMatrix(){

@@ -2,8 +2,11 @@
 package worldGenerator;
 
 import helpers.Spline2D;
+import helpers.Spline2Dextended;
 
 import java.util.Random;
+
+import org.lwjgl.util.vector.Vector3f;
 
 public class Camp {
 	
@@ -16,7 +19,7 @@ public class Camp {
 	protected int posX;
 	protected int posY;
 	
-	private Spline2D outline;
+	private Spline2Dextended outline;
 
 	public Camp(World world, int slotX, int slotY) {
 		this.world = world;
@@ -92,13 +95,13 @@ public class Camp {
 	protected void setOutline(){
 		int angle = 0;
 		int radius = (int) (sizeRadius*0.5 +  random.nextInt((int) (sizeRadius*0.5)));
-		outline = new Spline2D(angle, radius , 0.0f);
+		outline = new Spline2Dextended(new Vector3f(angle, radius , 0.0f));
 		do{
 			angle += 24 + random.nextInt(24);
 			radius = (int) (sizeRadius*0.6 +  random.nextInt((int) (sizeRadius*0.4)));
-			outline.addVertex(angle, radius, 0f);
+			outline.addPoint(new Vector3f(angle, radius, 0f));
 		}while(angle<312);
-		outline.close();
+		outline.closePolar();
 	}
 	
 	protected void setPosition(){
@@ -147,7 +150,7 @@ public class Camp {
 		return false;
 	}
 	
-	public Spline2D getOutline() {
+	public Spline2Dextended getOutline() {
 		return outline;
 	}
 	
