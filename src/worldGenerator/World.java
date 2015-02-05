@@ -32,11 +32,12 @@ public class World {
 		heightMap = new HeightMap(this);
 		
 		setCamps();
+		generateRivers();
 		for(Camp camp: camps){
 			camp.createRoutes();
 		}
 		
-		generateRivers();
+		
 		
 		heightMap.finalizeHeightGrid();
 
@@ -127,7 +128,7 @@ public class World {
 			}
 		}
 		for(Route route:routes){
-			if(route.isRoute(x, y)){
+			if(route.distanceTo(x, y)<=0){
 				return ((a<<24) | (0<<16) | (255<<8) | 0);
 			}
 		}
