@@ -77,24 +77,24 @@ public class Route {
 		int nx;
 		int ny;
 		int score; // low score is good
-		for(int angle = - 60; angle <= 60; angle += 15){
+		for(int angle = - 60; angle <= 60; angle += 5 + random.nextInt(15)){
 			nx = (int) (x + distance * Math.cos(Math.toRadians(angle + direction)));
 			ny = (int) (y + distance * Math.sin(Math.toRadians(angle + direction)));
 			score = 1;
-			score += Math.abs(angle);
+			//score += Math.abs(angle);
 
 			for (River r: world.getRivers()){
 				if (r.distanceTo(nx, ny)<=0){
 					// point in river step-increase score
-					score += 15000;
+					score += 1500;
 				}else{
-					score += 10000/r.distanceTo(nx, ny);
+					score += 1000/r.distanceTo(nx, ny);
 				}
 			}
 			
-			int dist2End = (int) Math.sqrt(Math.pow(end.x - nx, end.y - ny));
+			int dist2End = (int) Math.sqrt(Math.pow(end.x - nx, 2) + Math.pow(end.y - ny, 2));
 			
-			score += dist2End/distance;
+			score += 5 *dist2End/(distance);
 		
 			totalScore += score;
 			options.add(new int[]{score, nx, ny});
