@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import objects.Bridge;
+import objects.StaticObject;
+
 public class World {
 	
 	private Random random;
@@ -19,6 +22,7 @@ public class World {
 	private HeightMap heightMap;
 	private List<Route> routes;
 	public List<River> rivers;
+	private List<StaticObject> staticObjects;
 
 	public World(Random random) {
 		this.random = random;
@@ -185,6 +189,10 @@ public class World {
 	}
 	public List<River> getRivers() {
 		return rivers;
+	}
+	public void addStaticObject(StaticObject object) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

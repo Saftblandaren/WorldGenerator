@@ -8,6 +8,7 @@ import java.util.Random;
 
 import helpers.PointComparator;
 import helpers.Spline2Dextended;
+import objects.Bridge;
 
 import org.lwjgl.util.vector.Matrix2f;
 import org.lwjgl.util.vector.Vector2f;
@@ -100,7 +101,7 @@ public class Route {
 			options.add(new int[]{score, nx, ny});
 			
 		}
-		System.out.println("Total score: " + totalScore);
+		//System.out.println("Total score: " + totalScore);
 		Collections.sort(options, new PointComparator());
 
 		for (int[] point: options){
@@ -120,19 +121,63 @@ public class Route {
 	}
 	
 	private void setRoute() {
-		Vector2f nPoint = new Vector2f(0, 0);
-		routeSpline = new Spline2Dextended(new Vector3f(nPoint.x, nPoint.y, 0.0f));
-		int[] point = nextPoint((int) -translate.x, (int) -translate.y, direction);
-		while (nPoint.x < vector.length()- 5*pointSpread/2){
+		Vector2f localPoint = new Vector2f(0, 0);
+		routeSpline = new Spline2Dextended(new Vector3f(localPoint.x, localPoint.y, 0.0f));
+		int[] nextPoint = nextPoint((int) -translate.x, (int) -translate.y, direction);
+		int[] prevPoint;
+		while (localPoint.x < vector.length()- 5*pointSpread/2){
+			prevPoint = nextPoint;
 			//System.out.println("point: " + point[0] + ", " + point[1]);
-			nPoint = globalToLocal(point[0], point[1]);
+			localPoint = globalToLocal(prevPoint[0], prevPoint[1]);
 			//System.out.println("nPoint: " + nPoint.x + ", " + nPoint.y);
-			routeSpline.addPoint(nPoint);
-			point = nextPoint(point[0], point[1], direction);
+			routeSpline.addPoint(localPoint);
+			nextPoint = nextPoint(prevPoint[0], prevPoint[1], direction);
+			// check for collision with river
+			int[] riverCrossing = riverCrossing(prevPoint, nextPoint);
+			if (riverCrossing != null){
+				world.addRoute(new Route(riverCrossing[2], riverCrossing[3], (int) end.x, (int) end.y, world));
+				world.addStaticObject(new Bridge((riverCrossing[0] + riverCrossing[2]) /2, (riverCrossing[1] + riverCrossing[3]) /2, 0, 1.0f));
+				return;
+			}
+			
 		}
 		routeSpline.addPoint(new Vector2f(vector.length(), 0));
 	}
-
+	
+	private int[] riverCrossing(int[] start, int[] end){
+		int[] output = new int[4];
+		boolean crossing;
+		float k = (float) (end[1] - start[1]) / (float) (end[0] - start[0]);
+		float m = (float) start[1] - k * start[0];
+		for( River r: world.getRivers()){
+			crossing = false;
+			for(int x = start[0]; x <= end[0]; x += Math.signum(end[0] - start[0])){
+				if (!crossing){
+					if( r.distanceTo(x, (int) (k*x + m)) <= 10 ){
+						output[0] = x;
+						output[1] = (int) (k*x + m);
+						crossing = true;
+						System.out.println("Init crossing");
+					}
+				}else{
+					if( r.distanceTo(x, (int) (k*x + m)) >= 10 ){
+						output[2] = x;
+						output[3] = (int) (k*x + m);
+						System.out.println("Crossing");
+						return output;
+					}
+				}
+			}
+			if(crossing){
+				output[2] = end[0];
+				output[3] = end[1];
+				System.out.println("Crossing");
+				return output;
+			}				
+		}
+		return null;
+	}
+	
 	private void createRotateMatrix(){
 		rotateMatrix = new Matrix2f();
 		rotateMatrix.m00 = (float) (vector.length()/(vector.x + Math.pow(vector.y, 2)/vector.x));

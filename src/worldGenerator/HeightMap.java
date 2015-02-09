@@ -41,6 +41,7 @@ public class HeightMap {
 					if (r.distanceTo(x*POINT_SPACE, y*POINT_SPACE) < POINT_SPACE){
 						riverValley = 20 * (r.getMaxWidth()+POINT_SPACE-r.distanceTo(x*POINT_SPACE, y*POINT_SPACE))/(r.getMaxWidth()+POINT_SPACE);
 						//System.out.println("riverValley: " + riverValley);
+						riverValley = 40;
 					}
 				}
 				int localVari2 = localVari * 2 + 1;
